@@ -56,7 +56,8 @@ declined rows: a gate skipping rows whose beliefs BEAT the market
 lose to it (positive), and the pnl column alone cannot tell them apart.
 
 `reconcile` diffs that mechanical ledger against the hand-kept table under
-"Outside-view veto: settled counterfactual ledger" in strategy/playbook.md
+"Outside-view veto: settled counterfactual ledger" in the frozen
+strategy/playbook-reference.md
 (markdown rows plus the batches written up in prose only). Rows are matched
 by forecast id where the playbook names one, else by question text and
 date. It prints hand rows with no ledger row, settled outside-view-veto
@@ -84,7 +85,7 @@ import replay
 import screen_replay  # noqa: E402  (protected sibling: fill model, caps, parsing)
 
 ROOT = replay.ROOT
-PLAYBOOK = ROOT / "strategy" / "playbook.md"
+PLAYBOOK = ROOT / "strategy" / "playbook-reference.md"  # frozen table, 2026-10-01
 RETRO_DIR = ROOT / "journal" / "retros"
 STAKE_USD = 5.0
 # market -> gamma event, from the cache core/screen_replay.py events fills.
