@@ -39,8 +39,9 @@ Checks, over a trailing window (default 24h):
      (won/lost) forecasts.jsonl row with skip_reason outside-view-veto or
      wide-spread-veto and settled_ts >= 2026-08-23 (when DEEP-2026-08-23
      made the same-commit counterfactual-table extension a rule) must have
-     its id appear somewhere in strategy/playbook.md — either as a table
-     row or as a documented exclusion. The prose rule was violated three
+     its id appear somewhere in strategy/playbook.md, the frozen
+     strategy/playbook-reference.md, or a journal/retros/*.md file (since
+     DEEP-2026-09-30 the counterfactual grading lives in the retro). The prose rule was violated three
      times on 2026-08-26 alone (Crowley 7dac557c4c19 at 07:28Z, the three
      PCE MoM rows at 15:21Z, the BoK pair at 04:13Z next day — the last
      logged as "veto-correct" when the vetoed read had in fact WON its
@@ -179,10 +180,17 @@ def main():
 
     # Check 5: veto-settlement table duty (see module docstring).
     VETO_TABLE_SINCE = "2026-08-23"
-    try:
-        playbook = (ROOT / "strategy" / "playbook.md").read_text()
-    except OSError:
-        playbook = ""
+    # DEEP-2026-09-30 froze the playbook table and moved CF grading into
+    # the retro, so a settled veto row may be graded in any of these.
+    graded_in = [ROOT / "strategy" / "playbook.md",
+                 ROOT / "strategy" / "playbook-reference.md"]
+    graded_in += sorted((ROOT / "journal" / "retros").glob("*.md"))
+    playbook = ""
+    for path in graded_in:
+        try:
+            playbook += path.read_text()
+        except OSError:
+            pass
     latest = {}
     for row in forecasts:
         rid = str(row.get("id", ""))
@@ -199,8 +207,8 @@ def main():
             table_gaps.append(
                 f"settled {row.get('skip_reason')} row {rid} "
                 f"({row.get('settled_ts')} {row.get('category')}) absent from "
-                f"playbook.md counterfactual ledger (add the row or a "
-                f"documented exclusion)"
+                f"playbook.md, playbook-reference.md and every retro (grade it "
+                f"in the settling retro)"
             )
 
     # Check 6: FULL-cycle funnel-line presence (see module docstring).
