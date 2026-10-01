@@ -7131,3 +7131,35 @@ measured forecast. Evidence: RETRO-20260930-1815. Xiaomi row
 367d2b7c6fe4 (Sep 27) flagged Alibaba row a733d6439c5a (0.88) as stale.
 No Alibaba row followed, and 0.88 stood for three days until Alibaba
 resolved No.
+
+## Edge audit tool: mechanical category re-rank and blend-bar check (2026-10-01)
+
+`python3 strategy/tools/edge_audit.py` replaces the hand-written
+category re-ranks (DEEP-2026-09-16/17/26). It pools tags into families
+(econ-cpi, econ-jobs, ... -> econ), and every dBrier comes with a t-stat,
+so |t| < 2 reads as noise. Deep retros run it and cite its table. They do
+not compute their own.
+
+Snapshot at n=966 settled forecasts with a book:
+- **Beats the market at |t| >= 2:** commodities only (n=33, -0.026,
+  t=-2.78).
+- **Worse at |t| >= 2:** ai (n=42, +0.068), earnings (n=13, +0.018),
+  market-microstructure (n=10, +0.072). Earnings is new to the
+  worse-than-market list. It gets research time only with a mechanical
+  anchor, as ai and market-microstructure already do.
+- **Disagreement size:** below |est - mid| 0.10 my beliefs are
+  market-flat (n=773, every bucket |t| < 1.1). At 0.10-0.20 they run
+  +0.020 and at >= 0.20 +0.079 (t=+2.10). This is the forecast-stream
+  confirmation of the outside-view veto. The bet ledger agrees: claimed
+  edge 0.04-0.10 is +$13.08 on 42 bets, and claimed edge >= 0.10 is
+  -$13.77 on 10 bets.
+- **Shrinkage:** the Brier-optimal k in est' = mid + k*(est - mid) is
+  0.25 on the first half and 0.15 on the second. Held out, it turns
+  dBrier from +0.009/+0.007 (raw) to about 0. Only ~20% of my raw
+  disagreement is signal.
+- **Blend bar (proposals 2026-09-11):** the improvement does not survive
+  leave-one-out. Dropping cc0b2361223a alone takes it from +0.0013 to
+  +0.0007. The bar stays unmet, so no calibrate.py and no blend rule.
+
+No gate or veto changes here. These are observations and a research
+priority, and the existing rules decide bet eligibility.
