@@ -502,8 +502,8 @@ quoting every leg [exploration entries 2026-08-11/18/19].
   source. Set `next_full_cycle_after` to the next event boundary, <= 3h
   out, never past a known event start. Every FULL advances the pointer.
   Run a FULL if fewer than `min_full_cycles_per_day` ran in 24h. Count
-  them with the exact awk command in `schedule.json` `notes`, and copy the
-  number it prints [DEEP-2026-08-04/06/10/26].
+  them with `python3 strategy/tools/count_full.py` and copy the number it
+  prints [DEEP-2026-08-04/06/10/26].
 - **Screener budget:** 150 batches per UTC day, shared by both runners (15
   per screened FULL). Space screened FULLs >= 2h apart unless a dated
   catalyst needs one. Keep >= 45 batches unspent until 16:00Z
